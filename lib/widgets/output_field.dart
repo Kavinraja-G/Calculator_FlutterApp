@@ -9,15 +9,15 @@ class OutputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
       child: Align(
-        alignment: Alignment.centerRight,
-        child: FittedBox(
+        alignment: Alignment.topRight,
+              child: FittedBox(
           fit: BoxFit.fitWidth,
           child: Text(
             _fieldText,
             style: TextStyle(
-              fontSize: 90,
+              fontSize: MediaQuery.of(context).size.width / 5,
               color: Colors.white,
             ),
           ),

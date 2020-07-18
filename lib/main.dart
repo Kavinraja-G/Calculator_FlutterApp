@@ -29,6 +29,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool operatorStatus = false;
+  var currOperation = " ";
   var toPerform = "";
   var left = "";
   var right = "";
@@ -69,48 +70,61 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
+
+//INDICATOR FOR CURRENT OPERATION (TOP RIGHT)
+            Container(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: FittedBox(
+                    child: Text(
+                  '$currOperation',
+                  style: TextStyle(color: Colors.white, 
+                  fontSize: 20),
+                )),
+              ),
+            ),
+
 //NUMBER FIELD
-          OutputField(_fieldText),
+            OutputField(_fieldText),
 
 //GRID LAYOUT WIDGETS
-            Container(
-                padding: EdgeInsets.all(5),
-                color: Colors.black,
-                child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 4,
-                  children: List.generate(20, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: FloatingActionButton(
-                        onPressed: () {
-                          _onPressChange(index);
-                        },
-                        backgroundColor: (index >= 0 && index <= 2)
-                            ? Colors.white38
-                            : (index == 3 ||
-                                    index == 7 ||
-                                    index == 11 ||
-                                    index == 15 ||
-                                    index == 19)
-                                ? Colors.amber[700]
-                                : Colors.blueGrey[900],
-                        child: Text(
-                          options[index],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                )),
+            GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.height / 2),
+                crossAxisCount: 4,
+              ),
+              itemCount: 20,
+              itemBuilder: (context, index){
+                return Container(
+                  padding: EdgeInsets.all(5),
+                  child: FloatingActionButton(
+                  onPressed: () {
+                    _onPressChange(index);
+                  },
+                  backgroundColor: (index >= 0 && index <= 2)
+                      ? Colors.white38
+                      : (index == 3 ||
+                              index == 7 ||
+                              index == 11 ||
+                              index == 15 ||
+                              index == 19)
+                          ? Colors.amber[700]
+                          : Colors.blueGrey[900],
+                  child: Text(
+                    options[index],
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: MediaQuery.of(context).size.width / 15,
+                    ),
+                  ),
+                    ),
+                );
+              },
+            ),
 
 //Some Padding at the bottom
-            SizedBox(
-              height: 10,
-            ),
           ],
         ),
       ),
@@ -126,6 +140,7 @@ class _HomePageState extends State<HomePage> {
       operatorStatus = false;
       left = "";
       right = "";
+      currOperation = " ";
       setState(() {});
     } else if (fieldEffect.contains(op)) {
       _fieldText = ctrl.changeField(_fieldText, op);
@@ -137,6 +152,7 @@ class _HomePageState extends State<HomePage> {
       left = _fieldText;
       _fieldText = "0";
       toPerform = op;
+      currOperation = toPerform;
       setState(() {});
     } else if (left.isNotEmpty && right.isNotEmpty && operations.contains(op)) {
       _fieldText = ctrl.performOperation(left, right, op);
@@ -160,11 +176,13 @@ class _HomePageState extends State<HomePage> {
       left = _fieldText;
       right = "";
       toPerform = "";
+      currOperation = " ";
       setState(() {});
     } else {
       operatorStatus = false;
       left = "";
       right = "";
+      currOperation = " ";
       setState(() {
         _fieldText = "0";
       });
